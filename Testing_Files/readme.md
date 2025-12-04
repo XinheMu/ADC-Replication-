@@ -35,7 +35,7 @@ In output mode 'sel', the two columns are:'estseldis', the estimated selectivity
 
 Feel free to use new test queries if you like. In that case, to test k new queries on my model, please edit the file dataset_name+'/'+dataset_name+'_testset.csv', eg. 'power/power_testset.csv' to contain 2k rows and 'dimension' columns, with row (2k-2) containing the query lower bounds for each attribute, and row (2k-1) containing the query upper bounds for each atribute. 
 Note that attributes NOT included in the "WHERE" clause STILL need to appear in the .csv file, in this case, their respective query [lower bound]/[upper bound] is simple the [lower bound of that attribute in the dataset, minus 1]/[upper bound of that attribute in the dataset, plus 1]. 
-Adjust the file dataset_name+'/'+dataset_name+'_real_test.npy' if you want my program to output Q-error rather than selectivity values. 
+Adjust the file dataset_name+'/'+dataset_name+'_real_test.npy' along with the list of queries if you want my program to output Q-error rather than selectivity values. 
 
 
 The latest version of all libraries found in the "import" commands, as of December 4 2025, are found to make the code run successfully.
