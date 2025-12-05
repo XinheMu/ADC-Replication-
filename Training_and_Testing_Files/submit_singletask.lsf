@@ -1,0 +1,13 @@
+#BSUB -J naru
+#BSUB -n 36                          # 1  task × 36 cores
+#BSUB -R "span[ptile=36]"             # 36 cores per node
+#BSUB -o %J_naru.out
+#BSUB -e %J_naru.err
+#BSUB -W 2880                          # Adjust time limit as needed
+#BSUB -q batch
+
+module purge
+module load mpi/impi-2017u3-intel-2017u4
+export OMP_NUM_THREADS=$LSB_DJOB_NUMPROC
+just train-lw-nn higgs originalhiggs base 256_256_128_64 200 100000 32 0 123
+
