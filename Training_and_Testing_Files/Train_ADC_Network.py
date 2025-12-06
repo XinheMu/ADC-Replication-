@@ -145,15 +145,23 @@ def score_cauc(positions,samplesize,stepsize):
     i=len(samplesize[0])-1
     samplesize[0][0]=min(size,samplesize[0][0])
     while i>=0:
+        bufferpool_val=torch.zeros((1,samplesize[1][i],80))
+        bufferpool_grad_val=torch.zeros((dimension,samplesize[1][i],80))
         samplesize[0][i]=min(size,samplesize[0][i])
         while processed_points<samplesize[0][i]:
             new_grad_val, new_val=batch_process(positions[:,:samplesize[1][i]],processed_points,min(processed_points+stepsize[i],samplesize[0][0]),TimeDecay)
-            grad_val[:,:samplesize[1][i]]=grad_val[:,:samplesize[1][i]]+new_grad_val
-            val[:,:samplesize[1][i]]=val[:,:samplesize[1][i]]+new_val
+            bufferpool_val[:,:,j%80]=new_val
+            bufferpool_grad_val[:,:,j%80]=new_grad_val
             processed_points=processed_points+stepsize[i]
             j=j+1
-            if j%10==0:
+            if j%80==0:
                 print(processed_points)
+                val[:,:samplesize[1][i]]=val[:,:samplesize[1][i]]+torch.sum(bufferpool_val,2)
+                grad_val[:,:samplesize[1][i]]=grad_val[:,:samplesize[1][i]]+torch.sum(bufferpool_grad_val,2)
+                bufferpool_val=torch.zeros((1,samplesize[1][i],80))
+                bufferpool_grad_val=torch.zeros((dimension,samplesize[1][i],80))
+        val[:,:samplesize[1][i]]=val[:,:samplesize[1][i]]+torch.sum(bufferpool_val,2)
+        grad_val[:,:samplesize[1][i]]=grad_val[:,:samplesize[1][i]]+torch.sum(bufferpool_grad_val,2)
         i=i-1
         TimeDecay=TimeDecay[:,:samplesize[1][i]]
     return grad_val/(val+1e-7)
@@ -277,7 +285,8 @@ def cycle_head(batch_size,samplesize,stepsize,explore,gen_new_trainset=True,Time
     xtraintwo=torch.tensor(np.load(dataset_name+'training/'+dataset_name+'xtraintwo.npy')).to(torch.float32)
     ytraintwo=torch.tensor(np.load(dataset_name+'training/'+dataset_name+'ytraintwo.npy')).to(torch.float32)
     smallcycle(xtrainone[:,:batch_size*explore],ytrainone[:,:batch_size*explore],xtraintwo[:,:batch_size*explore],ytraintwo[:,:batch_size*explore],batch_size,explore,learnrate,begin)
-    smallcycle(xtraintwo[:,:batch_size*explore],ytraintwo[:,:batch_size*explore],xtrainone[:,:batch_size*explore],ytrainone[:,:batch_size*explore],batch_size,explore,learnrate,begin)
+    if explore>40 or time.time()-timestart<24000:
+        smallcycle(xtraintwo[:,:batch_size*explore],ytraintwo[:,:batch_size*explore],xtrainone[:,:batch_size*explore],ytrainone[:,:batch_size*explore],batch_size,explore,learnrate,begin)
 
 def smallcycle(trainx,trainy,testx,testy,batch_size,explore,learnrate,begin=0):
     global network, activated_nodes, max_nodes, activation_array
@@ -290,8 +299,8 @@ def smallcycle(trainx,trainy,testx,testy,batch_size,explore,learnrate,begin=0):
     unit=128
     loss=nn.MSELoss()
     optimizer=torch.optim.Adam(network.parameters(),lr=learnrate)
-    randints=np.random.randint(0,32,2000*unit)
-    for i in range(0,2000*unit):
+    randints=np.random.randint(0,32,1000*unit)
+    for i in range(0,1000*unit):
         if i==0:
             predtesty=network(testx)
             losstest=loss(testy[:,begin*batch_size:explore*batch_size]*Weight_sqrt[:,begin*batch_size:explore*batch_size]*100*ma.sqrt(length/TimeMax),predtesty[:,begin*batch_size:explore*batch_size]*Weight_sqrt[:,begin*batch_size:explore*batch_size]*100*ma.sqrt(length/TimeMax))
@@ -307,7 +316,7 @@ def smallcycle(trainx,trainy,testx,testy,batch_size,explore,learnrate,begin=0):
             predtesty=network(testx)
             losstest=loss(testy[:,begin*batch_size:explore*batch_size]*Weight_sqrt[:,begin*batch_size:explore*batch_size]*100*ma.sqrt(length/TimeMax),predtesty[:,begin*batch_size:explore*batch_size]*Weight_sqrt[:,begin*batch_size:explore*batch_size]*100*ma.sqrt(length/TimeMax))
             torch.save(network,dataset_name+'/'+dataset_name+'_head.pkl')        
-            if losstest_backup<losstest:
+            if losstest_backup<losstest or (explore<40 and time.time()-timestart>24000):
                 break
 
 def run_head(dname, uvar, dim, Tmin, gen_new_train_dataset, begin, load, struct1=0):
@@ -320,11 +329,11 @@ def run_head(dname, uvar, dim, Tmin, gen_new_train_dataset, begin, load, struct1
         network=torch.load(dataset_name+'/'+dataset_name+'_head.pkl')
     else:
         network=net_head(struct1)
-    stepsize=[300,100,50,25,15]
-    cycle_head(batch_size,[[12000000,4000000,2000000,1000000,700000],[5*batch_size,15*batch_size,25*batch_size,35*batch_size,43*batch_size]],stepsize,43,gen_new_train_dataset,Tmin,1e-4,begin)
-    cycle_head(batch_size,[[12000000,4000000,2000000,1000000,700000],[5*batch_size,15*batch_size,25*batch_size,35*batch_size,43*batch_size]],stepsize,25,False,Tmin,3e-5,begin)
-    cycle_head(batch_size,[[12000000,4000000,2000000,1000000,700000],[5*batch_size,15*batch_size,25*batch_size,35*batch_size,43*batch_size]],stepsize,43,False,Tmin,3e-5,begin)
-    cycle_head(batch_size,[[12000000,4000000,2000000,1000000,700000],[5*batch_size,15*batch_size,25*batch_size,35*batch_size,43*batch_size]],stepsize,43,False,Tmin,3e-5,begin)
+    stepsize=[480,240,120,60,40]
+    cycle_head(batch_size,[[12000000,4000000,2000000,1000000,700000],[5*batch_size,15*batch_size,25*batch_size,35*batch_size,43*batch_size]],stepsize,43,gen_new_train_dataset,Tmin,4e-5,begin)
+    cycle_head(batch_size,[[12000000,4000000,2000000,1000000,700000],[5*batch_size,15*batch_size,25*batch_size,35*batch_size,43*batch_size]],stepsize,25,False,Tmin,1e-5,begin)
+    cycle_head(batch_size,[[12000000,4000000,2000000,1000000,700000],[5*batch_size,15*batch_size,25*batch_size,35*batch_size,43*batch_size]],stepsize,43,False,Tmin,1e-5,begin)
+    cycle_head(batch_size,[[12000000,4000000,2000000,1000000,700000],[5*batch_size,15*batch_size,25*batch_size,35*batch_size,43*batch_size]],stepsize,43,False,Tmin,1e-5,begin)
 
 def run_tail(dname, uvar, dim, load, struct=0):
     global dataset_name, unit_of_variables, dimension, network
@@ -347,7 +356,7 @@ def gen_head_trainset(dname, uvar, dim, Tmin, batch_size, dataset_num):
     dimension=dim
     regu_step1()
     samplesize=[[12000000,4000000,2000000,1000000,700000],[5*batch_size,15*batch_size,25*batch_size,35*batch_size,43*batch_size]]
-    stepsize=[300,100,50,25,15]
+    stepsize=[480,240,120,60,40]
     set_global(timestep,Time_min,batch_size,dimension,43)
     xtrain=torch.cat((sample(length*BatchSize)*SignalDecay+torch.normal(0,1,(dimension,length*BatchSize))*NoiseVar,TimeChart,NoiseVar_inv,NoiseVarSquare_inv),0)[:,:cutoff_length*BatchSize]
     xtrain=xtrain.float()
@@ -388,6 +397,7 @@ if __name__ == "__main__":
     uvar=[1]
     bgin=0
     timestep=(np.load('timestep.npy').tolist())
+    timestart=time.time()
     if gen_trainset_only:
         batch_size=round(bsize/2)
         gen_head_trainset(dataset,[uvar],dimension,Time_min,batch_size,dataset_num)

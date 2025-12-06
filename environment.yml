@@ -1,0 +1,17 @@
+name: my_conda_env
+channels:
+  - defaults
+dependencies:
+  - python=3.10
+  - torchaudio
+  - cpuonly
+  - torchvision
+  - pytorch
+  - scipy
+  - pandas
+  - matplotlib
+  - numpy
+  - gxx_linux-64
+  - scikit-learn
+  - lightgbm
+prefix: /share/home/muxinhe/miniconda3/envs/my_conda_env

@@ -54,7 +54,7 @@ ID_B=$(bsub \
     -W 600 \
     "python Train_ADC_GMM.py $dataset_name $dimension_init $nan_to" \
     | grep -oE '[0-9]+')
-PARALLEL_JOBS+="done($ID_B)"
+PARALLEL_JOBS+="done($JOB_A_ID)"
 
 # --- Program C (Network Training - 4 Copies) ---
 # Note: \$LSB_JOBINDEX is escaped so it is evaluated on the compute node
@@ -84,7 +84,7 @@ JOB_D_ID=$(bsub \
     "python Train_ADC_Mergetrainset.py $dataset_name"\
     | grep -oE '[0-9]+')
 
-echo "Step 3: Submitted Job D (Waiting on B and C)"
+echo "Step 3: Submitted Job D (Waiting on C)"
 
 # =================================================================
 # STEP 4: Program E (Final Training)

@@ -263,7 +263,7 @@ def train_KDE_model(dim,full_kernum,learnrate,resample_and_sgd=True,loadmatrix=F
         print('Initialization complete')
         for k in range(0,kernels_num):
             cluster_points_mask=(kmeans.labels_== k)
-            cluster_points=data_used[cluster_points_mask,:]        
+            cluster_points=(data_used[:samples_num,:])[cluster_points_mask,:]        
             if len(cluster_points) == 0:
                 kernels_matrix[2*dimension,k]=1e-6 
                 kernels_matrix[dimension:2*dimension,k]=torch.ones((dimension))
@@ -300,7 +300,7 @@ def train_KDE_model(dim,full_kernum,learnrate,resample_and_sgd=True,loadmatrix=F
                 np.save(dataset_name+'/'+'KDE_params_adjusted_'+dataset_name+'.npy',kernels_matrix.numpy())
             if i%20==0:
                set_datapoint(test_sample_num)
-    set_datapoint(8*test_sample_num)
+    set_datapoint(4*test_sample_num)
     print("finetuning model on larger trainset using EM algorithm")
     for i in range(241,251):
         kernels_matrix[:,:kernels_num]=em_step_gmm(kernels_matrix[:,:kernels_num])
@@ -320,7 +320,7 @@ if __name__ == "__main__":
 bayes_called_attributes=(np.load(dataset_name+'/'+dataset_name+'_bayesarray.npy')[1,:])
 print(bayes_called_attributes)
 load=False
-test_sample_num=500000
+test_sample_num=1000000
 calc_step_size=8000
 dimension=dimension_init-len(bayes_called_attributes)
 full_kernels_num=1280
