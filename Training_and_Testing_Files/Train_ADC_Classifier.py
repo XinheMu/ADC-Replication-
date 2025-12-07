@@ -673,7 +673,7 @@ class GMM_Estimator:
         result_nobayes=result_nobayes.to(torch.float32)
         query_volume[current_query], KDE_estimated_selectivity[current_query]=volume, max(result_nobayes,1e-8)
         if working_mode=='ADC+':
-            if (result*bayes_used+result_nobayes*(1-bayes_used))<1/(20*size) or classifier.predict(np.array([[ma.log(volume),ma.log(result_nobayes.item())]]))==0:
+            if (result*bayes_used+result_nobayes*(1-bayes_used))<1/(20*size):
                 return (result*(bayes_used)+result_nobayes*(1-bayes_used)), 0, True, [], 0
         if working_mode=='ADC':
             if (result*bayes_used+result_nobayes*(1-bayes_used))<1/(20*size):
@@ -899,8 +899,8 @@ def run(dname,uvar,dim,kernum,tm,workload_size,bayes_source_attributes=None,baye
     bayesnet=[]    
     get_reg_consts()    
     kernels_matrix=torch.tensor(np.load(dataset_name+'/'+'KDE_params_adjusted_'+dataset_name+'.npy')).float()
-    evalnet_head=torch.load(dataset_name+'/'+dataset_name+'_head.pkl')
-    evalnet_tail=torch.load(dataset_name+'/'+dataset_name+'_tail.pkl')
+    evalnet_head=torch.load(dataset_name+'/'+dataset_name+'_head.pkl',weights_only=False)
+    evalnet_tail=torch.load(dataset_name+'/'+dataset_name+'_tail.pkl',weights_only=False)
     j=0
     min_sel=1/orisize
     timeused=np.zeros(workload_size+1)
