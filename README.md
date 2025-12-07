@@ -38,10 +38,10 @@ First, make sure you are under the directory Testing_Files
 The current ADC program can be ran in the format
 conda run -n environment python ADC_Cardest.py dataset_name ADCversion output_type unit_of_variables dimension Time_min workload_size bayes_source_attribute bayes_called_attribute bayes_assist_attribute nan_to threshold draws
 For simplicity, just run
-conda run -n environment ADC_Cardest.py higgs ADC+ qerror "[1e-3,1e-3,1e-3,1e-3,1e-3,1e-3,1e-3]" 7 1/1280 10000 "[1]" "[0]" "[2]"
-conda run -n environment ADC_Cardest.py power ADC+ qerror "[1e-3,1e-3,1e-2,2e-1,1,1,1]" 7 1/1280 10000 "[3]" "[0]" "[6]" -1
-conda run -n environment ADC_Cardest.py forest ADC+ qerror "[1,1,1,1,1,1,1,1,1,1]" 10 1/160 10000
-conda run -n environment ADC_Cardest.py advantage ADC+ qerror "[1,1,1,1,1]" 5 1/320 10000
+conda run -n my_conda_env ADC_Cardest.py higgs ADC+ qerror "[1e-3,1e-3,1e-3,1e-3,1e-3,1e-3,1e-3]" 7 1/1280 10000 "[1]" "[0]" "[2]"
+conda run -n my_conda_env ADC_Cardest.py power ADC+ qerror "[1e-3,1e-3,1e-2,2e-1,1,1,1]" 7 1/1280 10000 "[3]" "[0]" "[6]" -1
+conda run -n my_conda_env ADC_Cardest.py forest ADC+ qerror "[1,1,1,1,1,1,1,1,1,1]" 10 1/160 10000
+conda run -n my_conda_env ADC_Cardest.py advantage ADC+ qerror "[1,1,1,1,1]" 5 1/320 10000
 
 For a more detailed guide, the model parameters are explained as follows:
 dataset_name: The dataset on which to run our experiment. Currently chosen among the values 'forest', 'power', 'higgs', 'advantage'. Note that the dataset 'modulo' is codenamed 'advantage' in our numerical experiments.
@@ -77,6 +77,14 @@ bash Train_ADC_onestep.sh power 7 1/1280 1 -1
 bash Train_ADC_onestep.sh higgs 7 1/1280 1
 bash Train_ADC_onestep.sh advantage 5 1/320 1
 
+then run 
+conda run -n my_conda_env python Train_ADC_Classifier.py forest "[1,1,1,1,1,1,1,1,1,1]" 10 1/160 20000
+conda run -n my_conda_env python Train_ADC_Classifier.py power "[1e-3,1e-3,1e-2,2e-1,1,1,1]" 7 1/1280 20000 "[3]" "[0]" "[6]" -1
+conda run -n my_conda_env python Train_ADC_Classifier.py higgs "[1e-3,1e-3,1e-3,1e-3,1e-3,1e-3,1e-3]" 7 1/1280 20000 "[1]" "[0]" "[2]"
+conda run -n my_conda_env python Train_ADC_Classifier.py advantage "[1,1,1,1,1]" 5 1/320 20000
+
+then run the exact same testing command (that is, run ADC_Cardest.py) using the same commands as before.
+
 For training the workload on a different dataset, named X, please follow the instructions below. Note that X must be made to only contain continuous attributes. The current version of ADC cannot yet handle categorical ones.
 
 (1)Prepare a dataset consisting solely of continuous attributes, X, and put it into a csv file 'originalX.csv' in the subdirectory 'Xtraining'
@@ -90,6 +98,9 @@ dimension: dimensionality of your dataset
 time_min: early stopping time. 1/320 is a good initial guess, please input this value as a FRACTION rather than DECIMAL
 added_layer: add another layer of 150 neurons in the middle of the noise prediction network, recommended 1 for simple datasets and 2 for complex ones
 nan_to: The value that you convert rows of missing values to, eg. -1 for the 'power' dataset. Skip if the dataset has no missing values
+(5)run the command 
+conda run -n my_conda_env python Train_ADC_Classifier.py X unit_of_variables dimension Time_min trainset_size bayes_source_attributes bayes_called_attributes bayes_assist_attributes nan_to
+To check the bayes_source/called/assist_attributes, look into the directory X for a file named FD3_abc_X.npy. If it doesn't exist, bayesnet was not used and enter the three attributes as "[]", if it does, b is the bayes_source attribute, a the bayes_called_attribute, and c the bayes_assist_attribute
 
 3.	Generating new workloads and producing results for control group algorithms
 
