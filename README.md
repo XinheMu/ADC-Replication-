@@ -21,8 +21,6 @@ Please consult the original paper and the above link for how to set up their mod
 Follow the following steps to prepare our repository and environment on your server
 
 1.  Clone the repository
-
-    bash
     
     git clone https://github.com/XinheMu/ADC-Replication-
     
@@ -30,8 +28,6 @@ Follow the following steps to prepare our repository and environment on your ser
     
 
 3.  Create and activate the Conda environment:
-
-    bash
     
     conda env create -f environment.yml
     
@@ -110,7 +106,7 @@ bash Train_ADC_onestep.sh higgs 7 1/1280 1
 
 bash Train_ADC_onestep.sh advantage 5 1/320 1
 
-then run
+Train_ADC_onestep.sh submit a total of eight tasks to the remote server. AFTER all eight tasks submitted have finished , which often take more than 10 hours, run
 
 conda run -n my_conda_env python Train_ADC_Classifier.py forest "[1,1,1,1,1,1,1,1,1,1]" 10 1/160 20000
 
