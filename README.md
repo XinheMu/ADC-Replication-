@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-
 Welcome to the open source code for “Downsizing Diffusion Models for Cardinality Estimation”
 Our open source code contains two parts:
 (1)	The Testing_Files directory, used purely for testing the performance of our pre-trained model.
@@ -31,7 +29,7 @@ Our experiment can be ran by performing the following steps.
 
 Follow these steps to replicate the analysis and results presented in the paper.
 
-1.	Using Pre-trained models to directly produce the experimental results for our workload (or any other workload on our dataset)
+## 1.Using Pre-Trained models to directly produce the expeimental results for our workload (or any other workload on our four test datasets)
 
 First, make sure you are under the directory Testing_Files
 
@@ -65,8 +63,7 @@ Feel free to use new test queries if you like. In that case, to test k new queri
 Note that attributes NOT included in the "WHERE" clause STILL need to appear in the .csv file, in this case, their respective query [lower bound]/[upper bound] is simple the [lower bound of that attribute in the dataset, minus 1]/[upper bound of that attribute in the dataset, plus 1]. 
 Adjust the file dataset_name+'/'+dataset_name+'_real_test.npy' to store the real selectivity of your new queries if you want my program to output Q-error rather than selectivity values while processing them. 
 
-
-2.	For training the models then testing them, which require a remote server
+## 2.For training the models, then testing them, which require a remote server
 
 First, make sure you are under the directory Training_and_Testing_Files
 
@@ -102,7 +99,7 @@ nan_to: The value that you convert rows of missing values to, eg. -1 for the 'po
 conda run -n my_conda_env python Train_ADC_Classifier.py X unit_of_variables dimension Time_min trainset_size bayes_source_attributes bayes_called_attributes bayes_assist_attributes nan_to
 To check the bayes_source/called/assist_attributes, look into the directory X for a file named FD3_abc_X.npy. If it doesn't exist, bayesnet was not used and enter the three attributes as "[]", if it does, b is the bayes_source attribute, a the bayes_called_attribute, and c the bayes_assist_attribute
 
-3.	Generating new workloads and producing results for control group algorithms
+## 3. Getting results for the compare group models, and generating new workloads and query labels into our desired format
 
 Our train, test, and valid sets, as well as the results for all compare group models, are generated and derived using the open source provided by 
 Xiaoying Wang, Changbo Qu, Weiyuan Wu, Jiannan Wang, and Qingqing Zhou. 2021. Are we ready for learned cardinality estimation? Proceedings of the VLDB Endowment (2021)
@@ -116,10 +113,4 @@ conda run -n their_environment load_queries.py dataset querytype
 The currently supported values for "dataset" are "forest", "power", "higgs", "advantage"
 The currently supported values for "querytype" are "train", "test", "valid"
 The generated files will be of the right format and name but in the wrong place, so you would need to move them to the right directory. 
-Please put the testing files in the directory “dataset” (eg. forest, power) and put the training queries and labels in the directory “datasettraining” (eg. foresttraining, powertraining), under directory Testomg_Files (for just testing)or Training_and_Testing_Files (for training and testing).
-=======
-# ADC-Replication-
-Replication codes for the essay "Downsizing Diffusion Models for Cardinality Estimation"
-See the three readme.md files in the directory Training_and_Testing_Files for detailed instructions on how to run the training, testing, and compare group experiments.
-Note that the testing can be carried out BEFORE (and after, of course) training the models, as I included a fully pre-trained model in my files for each of the four datasets. However, do NOT perform testing WHILE trainig the models, as this has the risk of making errors skyrocket.
->>>>>>> dfe3cd30afcabebe8c50d129d17a7dd8155c70fc
+Please put the testing files in the directory “dataset” (eg. forest, power) and put the training queries and labels in the directory “datasettraining” (eg. foresttraining, powertraining), under directory Testomg_Files (for just testing)or Training_and_Testing_Files (for training and testing)
