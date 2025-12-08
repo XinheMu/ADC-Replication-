@@ -20,16 +20,16 @@ Please consult the original paper and the above link for how to set up their mod
 
 Our experiment can be ran by performing the following steps.
 
-## Installation
+##Installation
 
-1.  **Clone the repository:**
+1.  **Clone the repository**
 
    ```bash
     git clone https://github.com/XinheMu/ADC-Replication-
     cd Training_and_Testing_Files
     ```
 
-3.  **Create and activate the Conda environment:**
+2.  **Create and activate the Conda environment:**
 
     ```bash
     conda env create -f environment.yml
