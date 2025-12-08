@@ -22,17 +22,21 @@ Follow the following steps to prepare our repository and environment on your ser
 
 1.  Clone the repository
 
-   ```bash
+    bash
+    
     git clone https://github.com/XinheMu/ADC-Replication-
+    
     cd Training_and_Testing_Files
-    ```
+    
 
-2.  Create and activate the Conda environment:
+3.  Create and activate the Conda environment:
 
-    ```bash
+    bash
+    
     conda env create -f environment.yml
+    
     conda activate my_conda_env
-    ```
+    
 
 Follow these steps to replicate the analysis and results presented in the paper.
 
