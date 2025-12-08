@@ -99,7 +99,7 @@ nan_to: The value that you convert rows of missing values to, eg. -1 for the 'po
 conda run -n my_conda_env python Train_ADC_Classifier.py X unit_of_variables dimension Time_min trainset_size bayes_source_attributes bayes_called_attributes bayes_assist_attributes nan_to
 To check the bayes_source/called/assist_attributes, look into the directory X for a file named FD3_abc_X.npy. If it doesn't exist, bayesnet was not used and enter the three attributes as "[]", if it does, b is the bayes_source attribute, a the bayes_called_attribute, and c the bayes_assist_attribute
 
-## 3. Getting results for the compare group models, and generating new workloads and query labels into our desired format
+## 3. Getting results for the compare group models, and generating new workloads and query labels in our desired format
 
 Our train, test, and valid sets, as well as the results for all compare group models, are generated and derived using the open source provided by 
 Xiaoying Wang, Changbo Qu, Weiyuan Wu, Jiannan Wang, and Qingqing Zhou. 2021. Are we ready for learned cardinality estimation? Proceedings of the VLDB Endowment (2021)
