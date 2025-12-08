@@ -26,7 +26,7 @@ Follow the following steps to prepare our repository and environment on your ser
     
     git clone https://github.com/XinheMu/ADC-Replication-
     
-    cd Training_and_Testing_Files
+    cd ADC-Replication-
     
 
 3.  Create and activate the Conda environment:
