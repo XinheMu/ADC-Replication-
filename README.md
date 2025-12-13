@@ -90,7 +90,7 @@ Feel free to use new test queries if you like. In that case, to test k new queri
 
 Note that attributes NOT included in the "WHERE" clause STILL need to appear in the .csv file, in this case, their respective query [lower bound]/[upper bound] is simple the [lower bound of that attribute in the dataset, minus 1]/[upper bound of that attribute in the dataset, plus 1].
 
-Adjust the file dataset_name+'/'+dataset_name+'_real_test.npy' to store the real selectivity of your new queries if you want my program to output Q-error rather than selectivity values while processing them. 
+Adjust the file dataset_name+'/'+dataset_name+'_real_test.npy' to store the real cardinality (note: NOT selectivity) of your new queries if you want my program to output Q-error rather than selectivity values while processing them. 
 
 ## 2.For training the models, then testing them, which require a remote server
 
