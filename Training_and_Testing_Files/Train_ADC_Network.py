@@ -345,7 +345,7 @@ def run_tail(dname, uvar, dim, load, struct=0):
         network=torch.load(dataset_name+'/'+dataset_name+'_tail.pkl')
     else:
         network=net_tail(struct)
-    cycle_tail(batch_size,[[1000000,330000,5000,1000],[30*batch_size,35*batch_size,40*batch_size,46*batch_size]],30)
+    cycle_tail(batch_size,[[1000000],[30*batch_size]],30)
     cycle_tail(batch_size,[[1000000,330000,100000,33000],[30*batch_size,35*batch_size,40*batch_size,46*batch_size]],46)
 
 def gen_head_trainset(dname, uvar, dim, Tmin, batch_size, dataset_num):
